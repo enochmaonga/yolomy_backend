@@ -1,5 +1,7 @@
 const express = require('express');
-const mongoose = rquire("mongoose");
+const mongoose = require("mongoose");
+
+const productRoutes = require('./routes/productRoutes')
 
 //initializing express
 const app = express()
@@ -8,11 +10,10 @@ const app = express()
 app.use(express.json())
 
 //DB config
-const MONGODB_URI= process.inv.MONGODB_URI ||
-require('./config').mongoDB_URI
+const MONGODB_URI = process.env.MONGODB_URI ||require('./config').mongoDB_URI
 
 //connect to mongoDB
-mongoose.connect(MONGODB_URI, {userNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 
 //check connection
 let db = mongoose.connection;
@@ -24,8 +25,11 @@ db.on('error', (error) =>{
     console.log(error);
 })
 
+//use Routes
+app.use('/products', productRoutes)
+
 //define PORT
-const PORT = process.inv.PORT || 5000
+const PORT = process.env.PORT || 5000
 app.listen(PORT, () =>{
     console.log(`server listening on port ${PORT}`)
 })
